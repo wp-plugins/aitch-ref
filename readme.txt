@@ -1,7 +1,7 @@
 === aitch ref! ===
 Contributors: postpostmodern
 Donate link: http://www.heifer.org/
-Tags: mvc, framework
+Tags: url, href
 Requires at least: 2.8.0
 Tested up to: 2.9.2
 Stable tag: trunk
