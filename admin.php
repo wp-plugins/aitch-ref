@@ -1,11 +1,11 @@
 <div class="wrap">
 	<h2>aitch ref!</h2>
 	
-	<?= $messages; ?>
+	<?php echo $messages; ?>
 	
 	<p>possible urls seperated by space or new line</p>
 	<form method="post">
-		<textarea name="urls"><?= $urls; ?></textarea>
+		<textarea name="urls"><?php echo $urls; ?></textarea>
 		
 		<div>
 			<input type="submit" value="Update"/>

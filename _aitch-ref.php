@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
