@@ -6,7 +6,7 @@ Requires at least: 2.8.0
 Tested up to: 2.9.2
 Stable tag: trunk
 
-Simple error debugging and logging functions.
+Remove most absolute urls in your html.  Useful for switching between dev & prod environments.
 
 == Description ==
 aitch!
