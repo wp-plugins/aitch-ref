@@ -3,7 +3,7 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP 5.
-Version: 0.12
+Version: 0.15
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
@@ -93,6 +93,12 @@ class AitchRef{
 	static private function updateUrls( $str ){
 		$urls = preg_split ("/\s+/", $str);
 		sort( $urls );
+		foreach( $urls as $k=>$url ){
+			// no trailing slash!
+			if( strrpos($url, '/') == (strlen($url)-1) ){
+				$urls[$k] = substr( $url, 0, -1 );
+			}
+		}
 		update_option( 'aitchref_urls', $urls );
 		
 		array_push( self::$messages, '<div class="updated fade"><p>aitch-ref! updated</p></div>' );

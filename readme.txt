@@ -17,5 +17,8 @@ aitch!
 1. Look at your source
 
 == Changelog ==
+= 0.15 =
+minor code cleanups
+
 = 0.1 =
 yes, its here
