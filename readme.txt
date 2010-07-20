@@ -14,9 +14,12 @@ aitch!
 == Installation ==
 1. Place entire /aitch-ref/ directory to the /wp-content/plugins/ directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Look at your source
+1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
+= 0.2 =
+minor code cleanups, using json_ecode for options db storage, fancy graphic
+
 = 0.15 =
 minor code cleanups
 
