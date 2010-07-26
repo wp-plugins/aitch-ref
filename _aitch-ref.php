@@ -3,7 +3,7 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP 5.
-Version: 0.2
+Version: 0.3
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
@@ -29,7 +29,7 @@ add_filter( 'url', 'AitchRef::_site_url' );
 add_filter( 'wp_list_pages', 'AitchRef::_site_url' );
 
 // these need to return back with leading http://
-//add_filter( 'get_permalink', 'AitchRef::_site_url_absolute' ); // maybe? test
+add_filter( 'get_permalink', 'AitchRef::_site_url_absolute' ); // maybe? test
 add_filter( 'option_siteurl', 'AitchRef::_site_url_absolute' );
 add_filter( 'site_url', 'AitchRef::_site_url_absolute' );
 
@@ -41,12 +41,13 @@ AitchRef::_setup();
 
 class AitchRef{
 	
-	static $baseurl = 'http://';
-	static $cwd = 'plugins/aitch-ref';	// full server path to current directory
-	static $messages = array();			// error / success messages to user
-	static $path = '';					// web accessible path to current to current directory
-	static $possible = array();			// a list of the possible base urls that can be replaced
-	static $render = '';				// path to view being rendered (currently only admin)
+	private static $baseurl = 'http://';
+	private static $cwd = 'plugins/aitch-ref';	// full server path to current directory
+	private static $is_mu = TRUE;
+	private static $messages = array();			// error / success messages to user
+	private static $path = '';					// web accessible path to current to current directory
+	private static $possible = array();			// a list of the possible base urls that can be replaced
+	private static $render = '';				// path to view being rendered (currently only admin)
 	
 	// run once on setup
 	static public function _setup(){
@@ -54,6 +55,11 @@ class AitchRef{
 		self::$cwd = dirname(__FILE__);
 		self::$path = str_replace( $_SERVER['DOCUMENT_ROOT'], '', self::$cwd).'/';
 		self::$possible = self::getUrls( TRUE );
+		
+		// set whether we are on MU or not
+		if( !function_exists('get_blog_option') ){
+			self::$is_mu = FALSE;
+		}
 	}
 	
 	// add_filter callback
@@ -94,7 +100,7 @@ class AitchRef{
 	
 	// db interaction
 	static private function getUrls( $as_array = FALSE ){
-		$urls = get_option( 'aitchref_urls' );
+		$urls = self::get_option( 'aitchref_urls' );
 		$urls = (array) json_decode( $urls );
 		
 		if( $as_array ){
@@ -116,7 +122,7 @@ class AitchRef{
 		}
 		
 		$urls = json_encode( $urls );
-		update_option( 'aitchref_urls', $urls );
+		self::update_option( 'aitchref_urls', $urls );
 		
 		array_push( self::$messages, '<div class="updated fade"><p>aitch-ref! updated</p></div>' );
 	}
@@ -128,5 +134,18 @@ class AitchRef{
 			extract( (array) $vars, EXTR_SKIP );
 			include self::$render;
 		}
+	}
+	
+	// wrappers for get_option, MU / single blog installs
+	static private function get_option( $key ){
+		return self::$is_mu ? get_blog_option( 1, $key ) : get_option( $key );
+	}
+	
+	static private function update_option( $key, $val ){
+		return self::$is_mu ? update_blog_option( 1, $key, $val ) : update_option( 1, $key, $val );
+	}
+	
+	static private function delete_option( $key ){
+		return self::$is_mu ? delete_blog_option( 1, $key ) : delete_option( $key );
 	}
 }

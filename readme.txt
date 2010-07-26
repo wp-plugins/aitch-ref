@@ -17,6 +17,9 @@ aitch!
 1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
+= 0.3 =
+better handling of mu / single blog installs.  MU uses blog #1 for all options db storage
+
 = 0.2 =
 minor code cleanups, using json_ecode for options db storage, fancy graphic
 
