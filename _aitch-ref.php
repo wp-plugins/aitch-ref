@@ -101,7 +101,10 @@ class AitchRef{
 	// db interaction
 	static private function getUrls( $as_array = FALSE ){
 		$urls = self::get_option( 'aitchref_urls' );
-		$urls = (array) json_decode( $urls );
+		// backwards compat, now storing this option as a json encoded string cuz im a maverick
+		if( !is_array($urls) ){
+			$urls = (array) json_decode( $urls );
+		}
 		
 		if( $as_array ){
 			return $urls;
