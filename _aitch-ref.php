@@ -3,19 +3,10 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP 5.
-Version: 0.3
+Version: 0.41
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
-$phpversion = (float) phpversion();
-
-if( $phpversion < 5.2 ){
-	echo( "<h1>aitch-ref! requires PHP 5.2 or greater</h1>" );
-	unset( $phpversion );
-	return;
-}
-
-unset( $phpversion );
 
 // these can return back urls starting with /
 add_filter( 'admin_url', 'AitchRef::_site_url' );
@@ -31,7 +22,10 @@ add_filter( 'wp_list_pages', 'AitchRef::_site_url' );
 // these need to return back with leading http://
 add_filter( 'get_permalink', 'AitchRef::_site_url_absolute' ); // maybe? test
 add_filter( 'option_siteurl', 'AitchRef::_site_url_absolute' );
+add_filter( 'page_link', 'AitchRef::_site_url_absolute' ); // maybe? test
+add_filter( 'pre_post_link', 'AitchRef::_site_url_absolute' ); // maybe? test
 add_filter( 'site_url', 'AitchRef::_site_url_absolute' );
+add_filter( 'template_directory_uri', 'AitchRef::_site_url_absolute' );
 
 // admin
 add_action( 'admin_menu', 'AitchRef::_admin_menu' );
@@ -141,7 +135,8 @@ class AitchRef{
 	
 	// wrappers for get_option, MU / single blog installs
 	static private function get_option( $key ){
-		return self::$is_mu ? get_blog_option( 1, $key ) : get_option( $key );
+		//return self::$is_mu ? get_blog_option( 1, $key ) : get_option( $key );
+		return get_option( $key );
 	}
 	
 	static private function update_option( $key, $val ){
