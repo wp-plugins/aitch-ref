@@ -13,6 +13,7 @@ add_filter( 'admin_url', 'AitchRef::_site_url' );
 add_filter( 'bloginfo', 'AitchRef::_site_url' );
 add_filter( 'bloginfo_url', 'AitchRef::_site_url' );
 add_filter( 'get_pagenum_link', 'AitchRef::_site_url' );
+add_filter( 'home_url', 'AitchRef::_site_url' );
 add_filter( 'option_url', 'AitchRef::_site_url' );
 add_filter( 'post_link', 'AitchRef::_site_url' );
 add_filter( 'the_content', 'AitchRef::_site_url' );
