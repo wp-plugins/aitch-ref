@@ -3,7 +3,7 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP 5.
-Version: 0.41
+Version: 0.42
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
@@ -135,12 +135,12 @@ class AitchRef{
 	
 	// wrappers for get_option, MU / single blog installs
 	static private function get_option( $key ){
-		//return self::$is_mu ? get_blog_option( 1, $key ) : get_option( $key );
-		return get_option( $key );
+		return self::$is_mu ? get_blog_option( 1, $key ) : get_option( $key );
+		//return get_option( $key );
 	}
 	
 	static private function update_option( $key, $val ){
-		return self::$is_mu ? update_blog_option( 1, $key, $val ) : update_option( 1, $key, $val );
+		return self::$is_mu ? update_blog_option( 1, $key, $val ) : update_option( $key, $val );
 	}
 	
 	static private function delete_option( $key ){

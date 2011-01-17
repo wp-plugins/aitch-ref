@@ -3,20 +3,24 @@ Contributors: postpostmodern
 Donate link: http://www.heifer.org/
 Tags: url, href
 Requires at least: 2.8.0
-Tested up to: 2.9.2
+Tested up to: 3.0.4
 Stable tag: trunk
 
-Remove most absolute urls in your html.  Useful for switching between dev & prod environments.
+Remove most absolute urls in your html.  Useful for switching between dev & prod environments.  Requires PHP 5
 
 == Description ==
-aitch!
+Useful for switching between different development environments.  Attempts to replace any absolute urls, whether generated though Wordpress option like 'siteurl' or 'home', or through hardcoded urls in posts.
 
 == Installation ==
 1. Place entire /aitch-ref/ directory to the /wp-content/plugins/ directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Enter all possible site urls in the text box, each on a new line. Example could be http://wordpress.org/ , http://dev.wordpress.org/, http://127.0.0.1/~wordpress/
 1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
+= 0.42 = 
+fixed bug in updating options on a multiuser install
+
 = 0.3 =
 better handling of mu / single blog installs.  MU uses blog #1 for all options db storage
 
