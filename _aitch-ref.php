@@ -3,7 +3,7 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP 5.
-Version: 0.42
+Version: 0.43
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
@@ -15,6 +15,7 @@ add_filter( 'bloginfo_url', 'AitchRef::_site_url' );
 add_filter( 'get_pagenum_link', 'AitchRef::_site_url' );
 add_filter( 'home_url', 'AitchRef::_site_url' );
 add_filter( 'option_url', 'AitchRef::_site_url' );
+add_filter( 'plugins_url', 'AitchRef::_site_url' );
 add_filter( 'post_link', 'AitchRef::_site_url' );
 add_filter( 'the_content', 'AitchRef::_site_url' );
 add_filter( 'url', 'AitchRef::_site_url' );
@@ -40,7 +41,7 @@ class AitchRef{
 	private static $cwd = 'plugins/aitch-ref';	// full server path to current directory
 	private static $is_mu = TRUE;
 	private static $messages = array();			// error / success messages to user
-	private static $path = '';					// web accessible path to current to current directory
+	private static $path = '';					// web accessible path to current to current directory, w trailing slash
 	private static $possible = array();			// a list of the possible base urls that can be replaced
 	private static $render = '';				// path to view being rendered (currently only admin)
 	
@@ -48,13 +49,11 @@ class AitchRef{
 	static public function _setup(){
 		self::$baseurl = 'http://'.$_SERVER['HTTP_HOST'];
 		self::$cwd = dirname(__FILE__);
-		self::$path = str_replace( $_SERVER['DOCUMENT_ROOT'], '', self::$cwd).'/';
+		self::$path = str_replace( $_SERVER['DOCUMENT_ROOT'], '', self::$cwd ).'/';
 		self::$possible = self::getUrls( TRUE );
 		
 		// set whether we are on MU or not
-		if( !function_exists('get_blog_option') ){
-			self::$is_mu = FALSE;
-		}
+		self::$is_mu = function_exists( 'get_blog_option' );
 	}
 	
 	// add_filter callback
