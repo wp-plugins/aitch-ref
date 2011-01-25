@@ -3,7 +3,7 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP 5.
-Version: 0.44
+Version: 0.45
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
@@ -48,13 +48,13 @@ class AitchRef{
 	
 	// run once on setup
 	static public function _setup(){
+		// set whether we are on MU or not
+		self::$is_mu = is_multisite();
+		
 		self::$baseurl = 'http://'.$_SERVER['HTTP_HOST'];
 		self::$cwd = dirname(__FILE__);
 		self::$path = str_replace( $_SERVER['DOCUMENT_ROOT'], '', self::$cwd ).'/';
 		self::$possible = self::getUrls( TRUE );
-		
-		// set whether we are on MU or not
-		self::$is_mu = function_exists( 'get_blog_option' );
 	}
 	
 	// add_filter callback
