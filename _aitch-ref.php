@@ -3,7 +3,7 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP 5.
-Version: 0.46
+Version: 0.49
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
@@ -39,22 +39,25 @@ AitchRef::_setup();
 class AitchRef{
 	
 	private static $baseurl = 'http://';
-	private static $cwd = 'plugins/aitch-ref';	// full server path to current directory
+	private static $cwd = '/var/www/plugins/aitch-ref';			// full server path to current directory
 	private static $is_mu = TRUE;
-	private static $messages = array();			// error / success messages to user
-	private static $path = '';					// web accessible path to current to current directory, w trailing slash
-	private static $possible = array();			// a list of the possible base urls that can be replaced
-	private static $render = '';				// path to view being rendered (currently only admin)
+	private static $messages = array();							// error / success messages to user
+	private static $path = '/wp-content/plugins/aitch-ref/';	// web accessible path to current to current directory, w trailing slash
+	private static $possible = array();							// a list of the possible base urls that can be replaced
+	private static $render = '';								// path to view being rendered (currently only admin)
 	
 	// run once on setup
 	static public function _setup(){
-		// set whether we are on MU or not
+		$pathinfo = pathinfo(__FILE__);
+		
 		self::$is_mu = is_multisite();
+		self::$possible = self::getUrls( TRUE );
 		
 		self::$baseurl = 'http://'.$_SERVER['HTTP_HOST'];
-		self::$cwd = dirname(__FILE__);
-		self::$path = str_replace( $_SERVER['DOCUMENT_ROOT'], '', self::$cwd ).'/';
-		self::$possible = self::getUrls( TRUE );
+		self::$cwd = $pathinfo['dirname'];
+		
+		// sorry if this is confusing, some servers (media temple) have strangeness using $_SERVER['DOCUMENT_ROOT']
+		self::$path = self::_site_url_absolute(WP_PLUGIN_URL).'/'.basename( $pathinfo['dirname'] ).'/';	
 	}
 	
 	// add_filter callback
@@ -81,6 +84,7 @@ class AitchRef{
 		return $links;
 	}
 	
+	// callback for add_options_page() to render options page in admin 
 	static public function _options_page(){
 		if( isset($_POST['urls']) ){
 			self::updateUrls($_POST['urls']);
@@ -96,6 +100,7 @@ class AitchRef{
 	// db interaction
 	static private function getUrls( $as_array = FALSE ){
 		$urls = self::get_option( 'aitchref_urls' );
+		
 		// backwards compat, now storing this option as a json encoded string cuz im a maverick
 		if( !is_array($urls) ){
 			$urls = (array) json_decode( $urls );
@@ -137,7 +142,6 @@ class AitchRef{
 	// wrappers for get_option, MU / single blog installs
 	static private function get_option( $key ){
 		return self::$is_mu ? get_blog_option( 1, $key ) : get_option( $key );
-		//return get_option( $key );
 	}
 	
 	static private function update_option( $key, $val ){

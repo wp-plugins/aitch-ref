@@ -6,7 +6,7 @@ Requires at least: 2.8.0
 Tested up to: 3.0.4
 Stable tag: trunk
 
-Remove most absolute urls in your html.  Useful for switching between dev & prod environments.  Requires PHP 5
+Remove most absolute urls in your html.  Useful for switching between dev & prod environments.  Requires PHP >= 5.2 ( json_encode() )
 
 == Description ==
 Useful for switching between different development environments.  Attempts to replace any absolute urls, whether generated though Wordpress option like 'siteurl' or 'home', or through hardcoded urls in posts.
@@ -18,6 +18,9 @@ Useful for switching between different development environments.  Attempts to re
 1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
+= 0.49 = 
+fixed bug in self::$path, discrepancies on $_SERVER['DOCUMENT_ROOT'] on certain evnironments
+
 = 0.42 = 
 fixed bug in updating options on a multiuser install
 
@@ -25,7 +28,7 @@ fixed bug in updating options on a multiuser install
 better handling of mu / single blog installs.  MU uses blog #1 for all options db storage
 
 = 0.2 =
-minor code cleanups, using json_ecode for options db storage, fancy graphic
+minor code cleanups, using json_encode for options db storage, fancy graphic
 
 = 0.15 =
 minor code cleanups
