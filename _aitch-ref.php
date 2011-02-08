@@ -2,8 +2,8 @@
 /*
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
-Description: href junk. Requires PHP 5.
-Version: 0.49
+Description: href junk. Requires PHP >= 5.2 and Wordpress >= 3.0
+Version: 0.5
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */

@@ -2,7 +2,7 @@
 Contributors: postpostmodern
 Donate link: http://www.heifer.org/
 Tags: url, href
-Requires at least: 2.8.0
+Requires at least: 3.0.0
 Tested up to: 3.0.4
 Stable tag: trunk
 
@@ -18,6 +18,9 @@ Useful for switching between different development environments.  Attempts to re
 1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
+= 0.5 =
+discovered incompatibility in wordpress 2.x, bumped minimum version to 3.0 - no new functionality
+
 = 0.49 = 
 fixed bug in self::$path, discrepancies on $_SERVER['DOCUMENT_ROOT'] on certain evnironments
 
