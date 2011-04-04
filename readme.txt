@@ -18,6 +18,9 @@ Useful for switching between different development environments.  Attempts to re
 1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
+= 0.55 = 
+fixed bug affecting 'upload_dir' filter
+
 = 0.53 = 
 added filter for admin scripts
 
