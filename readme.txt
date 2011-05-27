@@ -6,7 +6,7 @@ Requires at least: 3.0.0
 Tested up to: 3.1
 Stable tag: trunk
 
-Remove most absolute urls in your html.  Useful for switching between dev & prod environments.  Requires PHP >= 5.2 ( json_encode() )
+Remove most absolute urls in your html.  Useful for switching between dev & prod environments.  Requires PHP >= 5.2 ( json_encode )
 
 == Description ==
 Useful for switching between different development environments.  Attempts to replace any absolute urls, whether generated though Wordpress option like 'siteurl' or 'home', or through hardcoded urls in posts.
@@ -31,7 +31,7 @@ fixed deprecated argument in add_options_page()
 discovered incompatibility in wordpress 2.x, bumped minimum version to 3.0 - no new functionality
 
 = 0.49 = 
-fixed bug in self::$path, discrepancies on $_SERVER['DOCUMENT_ROOT'] on certain evnironments
+fixed bug in self::$path, discrepancies on $_SERVER['DOCUMENT_ROOT'] on certain environments
 
 = 0.42 = 
 fixed bug in updating options on a multiuser install
