@@ -3,7 +3,7 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP >= 5.2 and Wordpress >= 3.0
-Version: 0.55
+Version: 0.56
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
@@ -38,7 +38,6 @@ class AitchRef{
 		add_filter( 'get_pagenum_link', 'AitchRef::_site_url' );
 		add_filter( 'option_url', 'AitchRef::_site_url' );
 		add_filter( 'plugins_url', 'AitchRef::_site_url' );
-		add_filter( 'post_link', 'AitchRef::_site_url' );
 		add_filter( 'script_loader_src', 'AitchRef::_site_url' );
 		add_filter( 'the_content', 'AitchRef::_site_url' );
 		add_filter( 'upload_dir', 'AitchRef::_site_url' );
@@ -51,6 +50,7 @@ class AitchRef{
 		add_filter( 'option_home', 'AitchRef::_site_url_absolute' );
 		add_filter( 'option_siteurl', 'AitchRef::_site_url_absolute' );
 		add_filter( 'page_link', 'AitchRef::_site_url_absolute' ); 
+		add_filter( 'post_link', 'AitchRef::_site_url_absolute' );
 		add_filter( 'pre_post_link', 'AitchRef::_site_url_absolute' );
 		add_filter( 'site_url', 'AitchRef::_site_url_absolute' );
 		add_filter( 'template_directory_uri', 'AitchRef::_site_url_absolute' );	
@@ -76,7 +76,15 @@ class AitchRef{
 	
 	// add_filter callback
 	static public function _site_url_absolute( $url ){
-		$url2 = str_replace( self::$possible, self::$baseurl, $url ); 
+		if( is_array($url) ){
+			// this is to fix a bug in 'upload_dir' filter, 
+			// $url[error] needs to be a boolean but str_replace casts to string
+			$url2 = str_replace( self::$possible, self::$baseurl, array_filter($url) );
+			$url2 = array_merge( $url, $url2 );
+		} else {
+			$url2 = str_replace( self::$possible, self::$baseurl, $url );
+		}
+		
 		return $url2;
 	}
 	
