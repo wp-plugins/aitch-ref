@@ -3,7 +3,7 @@ Contributors: postpostmodern
 Donate link: http://www.heifer.org/
 Tags: url, href
 Requires at least: 3.0.0
-Tested up to: 3.1
+Tested up to: 3.1.3
 Stable tag: trunk
 
 Remove most absolute urls in your html.  Useful for switching between dev & prod environments.  Requires PHP >= 5.2 ( json_encode )
