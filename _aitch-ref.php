@@ -3,7 +3,7 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP >= 5.2 and Wordpress >= 3.0
-Version: 0.57
+Version: 0.58
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
@@ -19,7 +19,7 @@ class AitchRef{
 	private static $render = '';								// path to view being rendered (currently only admin)
 	
 	// run once on setup
-	static public function _setup(){
+	public static function _setup(){
 		$pathinfo = pathinfo(__FILE__);
 		
 		self::$is_mu = is_multisite();
@@ -32,7 +32,6 @@ class AitchRef{
 		self::$path = self::_site_url_absolute(WP_PLUGIN_URL).'/'.basename( $pathinfo['dirname'] ).'/';
 		
 		// these can return back urls starting with /
-		add_filter( 'admin_url', 'AitchRef::_site_url' );
 		add_filter( 'bloginfo', 'AitchRef::_site_url' );
 		add_filter( 'bloginfo_url', 'AitchRef::_site_url' );
 		add_filter( 'get_pagenum_link', 'AitchRef::_site_url' );
@@ -45,6 +44,7 @@ class AitchRef{
 		add_filter( 'wp_list_pages', 'AitchRef::_site_url' );
 		
 		// these need to return back with leading http://
+		add_filter( 'admin_url', 'AitchRef::_site_url' );
 		add_filter( 'get_permalink', 'AitchRef::_site_url_absolute' ); 
 		add_filter( 'home_url', 'AitchRef::_site_url_absolute' );
 		add_filter( 'option_home', 'AitchRef::_site_url_absolute' );
@@ -62,7 +62,7 @@ class AitchRef{
 	}
 	
 	// add_filter callback
-	static public function _site_url( $url ){
+	public static function _site_url( $url ){
 		if( is_array($url) ){
 			// this is to fix a bug in 'upload_dir' filter, 
 			// $url[error] needs to be a boolean but str_replace casts to string
@@ -76,7 +76,7 @@ class AitchRef{
 	}
 	
 	// add_filter callback
-	static public function _site_url_absolute( $url ){
+	public static function _site_url_absolute( $url ){
 		if( is_array($url) ){
 			// this is to fix a bug in 'upload_dir' filter, 
 			// $url[error] needs to be a boolean but str_replace casts to string
@@ -90,19 +90,19 @@ class AitchRef{
 	}
 	
 	// show options in 'settings' sidebar
-	static public function _admin_menu(){
+	public static function _admin_menu(){
 		add_options_page( 'AitchRef Settings', 'aitch ref!', 'manage_options', 'aitch-ref', 'AitchRef::_options_page' );
 	}
 	
 	// add 'settings' link in main plugins page
-	static public function _admin_plugins( $links ){
+	public static function _admin_plugins( $links ){
 		$settings_link = '<a href="options-general.php?page=aitch-ref">Settings</a>';  
 		array_unshift( $links, $settings_link );
 		return $links;
 	}
 	
 	// callback for add_options_page() to render options page in admin 
-	static public function _options_page(){
+	public static function _options_page(){
 		if( isset($_POST['urls']) ){
 			self::updateUrls($_POST['urls']);
 		}
@@ -115,7 +115,7 @@ class AitchRef{
 	}
 	
 	// db interaction
-	static private function getUrls( $as_array = FALSE ){
+	private static function getUrls( $as_array = FALSE ){
 		$urls = self::get_option( 'aitchref_urls' );
 		
 		// backwards compat, now storing this option as a json encoded string cuz im a maverick
@@ -131,7 +131,7 @@ class AitchRef{
 		}
 	}
 	
-	static private function updateUrls( $str ){
+	private static function updateUrls( $str ){
 		$urls = preg_split ("/\s+/", $str);
 		sort( $urls );
 		foreach( $urls as $k=>$url ){
@@ -148,7 +148,7 @@ class AitchRef{
 	}
 	
 	// render a page into wherever
-	static private function render( $filename, $vars = array() ){
+	private static function render( $filename, $vars = array() ){
 		self::$render = self::$cwd.'/'.$filename.'.php';
 		if( file_exists(self::$render) ){
 			extract( (array) $vars, EXTR_SKIP );
@@ -157,15 +157,15 @@ class AitchRef{
 	}
 	
 	// wrappers for get_option, MU / single blog installs
-	static private function get_option( $key ){
+	private static function get_option( $key ){
 		return self::$is_mu ? get_blog_option( 1, $key ) : get_option( $key );
 	}
 	
-	static private function update_option( $key, $val ){
+	private static function update_option( $key, $val ){
 		return self::$is_mu ? update_blog_option( 1, $key, $val ) : update_option( $key, $val );
 	}
 	
-	static private function delete_option( $key ){
+	private static function delete_option( $key ){
 		return self::$is_mu ? delete_blog_option( 1, $key ) : delete_option( $key );
 	}
 }

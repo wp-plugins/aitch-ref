@@ -3,7 +3,7 @@ Contributors: postpostmodern
 Donate link: http://www.heifer.org/
 Tags: url, href
 Requires at least: 3.0.0
-Tested up to: 3.1.3
+Tested up to: 3.2.1
 Stable tag: trunk
 
 Remove most absolute urls in your html.  Useful for switching between dev & prod environments.  Requires PHP >= 5.2 ( json_encode )
@@ -18,6 +18,9 @@ Useful for switching between different development environments.  Attempts to re
 1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
+= 0.58 =
+`admin_url` uses absolute url filter now
+
 = 0.55 = 
 fixed bug affecting 'upload_dir' filter
 
