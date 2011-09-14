@@ -3,7 +3,7 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP >= 5.2 and Wordpress >= 3.0
-Version: 0.58
+Version: 0.59
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
@@ -34,6 +34,7 @@ class AitchRef{
 		// these can return back urls starting with /
 		add_filter( 'bloginfo', 'AitchRef::_site_url' );
 		add_filter( 'bloginfo_url', 'AitchRef::_site_url' );
+		add_filter( 'content_url', 'AitchRef::_site_url' );
 		add_filter( 'get_pagenum_link', 'AitchRef::_site_url' );
 		add_filter( 'option_url', 'AitchRef::_site_url' );
 		add_filter( 'plugins_url', 'AitchRef::_site_url' );
@@ -44,7 +45,7 @@ class AitchRef{
 		add_filter( 'wp_list_pages', 'AitchRef::_site_url' );
 		
 		// these need to return back with leading http://
-		add_filter( 'admin_url', 'AitchRef::_site_url' );
+		add_filter( 'admin_url', 'AitchRef::_site_url_absolute' );
 		add_filter( 'get_permalink', 'AitchRef::_site_url_absolute' ); 
 		add_filter( 'home_url', 'AitchRef::_site_url_absolute' );
 		add_filter( 'option_home', 'AitchRef::_site_url_absolute' );

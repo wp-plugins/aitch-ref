@@ -18,6 +18,9 @@ Useful for switching between different development environments.  Attempts to re
 1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
+= 0.59 =
+added filter for `content_url`
+
 = 0.58 =
 `admin_url` uses absolute url filter now
 
