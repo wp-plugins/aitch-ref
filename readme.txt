@@ -18,6 +18,9 @@ Useful for switching between different development environments.  Attempts to re
 1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
+= .61 =
+added filter for `term_link`
+
 = 0.6 =
 added filter for `style_loader_src`
 
