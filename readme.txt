@@ -18,6 +18,15 @@ Useful for switching between different development environments.  Attempts to re
 1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
+= .66 =
+pre_post_link cahnged to not use absolute link, was causing double http:// on some sites
+
+= .65 =
+added aitch() helper function
+
+= .62 =
+force baseurl in absolute filter
+
 = .61 =
 added filter for `term_link`
 

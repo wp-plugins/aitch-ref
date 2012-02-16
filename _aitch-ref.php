@@ -3,7 +3,7 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP >= 5.2 and Wordpress >= 3.0
-Version: 0.61
+Version: 0.66
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
@@ -38,6 +38,7 @@ class AitchRef{
 		add_filter( 'get_pagenum_link', 'AitchRef::_site_url' );
 		add_filter( 'option_url', 'AitchRef::_site_url' );
 		add_filter( 'plugins_url', 'AitchRef::_site_url' );
+		add_filter( 'pre_post_link', 'AitchRef::_site_url' );
 		add_filter( 'script_loader_src', 'AitchRef::_site_url' );
 		add_filter( 'style_loader_src', 'AitchRef::_site_url' );
 		add_filter( 'term_link', 'AitchRef::_site_url' );
@@ -54,7 +55,6 @@ class AitchRef{
 		add_filter( 'option_siteurl', 'AitchRef::_site_url_absolute' );
 		add_filter( 'page_link', 'AitchRef::_site_url_absolute' ); 
 		add_filter( 'post_link', 'AitchRef::_site_url_absolute' );
-		add_filter( 'pre_post_link', 'AitchRef::_site_url_absolute' );
 		add_filter( 'siteurl', 'AitchRef::_site_url_absolute' );	// ಠ_ಠ
 		add_filter( 'site_url', 'AitchRef::_site_url_absolute' );	// ಠ_ಠ
 		add_filter( 'template_directory_uri', 'AitchRef::_site_url_absolute' );	
@@ -87,6 +87,22 @@ class AitchRef{
 			$url2 = array_merge( $url, $url2 );
 		} else {
 			$url2 = str_replace( self::$possible, self::$baseurl, $url );
+		}
+		
+		$has_http = ( strpos($url2, self::$baseurl)  );
+		
+		if( $has_http !== 0 ){
+			//dbug( $has_http, '$has_http' );
+			//dbug( $url2, '$url2' );
+			//dbug(self::$baseurl,'self::$baseurl');
+			
+			$url2 = self::$baseurl.$url2; 
+			//dbug($url2,'',10000);
+		}	
+			
+		if( strpos($url2, 'path-less') ){
+			//dbug($has_http);
+			//ddbug($url2);
 		}
 		
 		return $url2;
@@ -170,6 +186,21 @@ class AitchRef{
 	
 	private static function delete_option( $key ){
 		return self::$is_mu ? delete_blog_option( 1, $key ) : delete_option( $key );
+	}
+}
+
+if( !function_exists('aitch') ){
+	/*
+	*	helper for AitchRef to use directly in templates
+	*	@param string the url
+	*	@param bool to use absolute or not
+	*	@return string
+	*/
+	function aitch( $href, $absolute = FALSE ){
+		if( $absolute )
+			return AitchRef::_site_url_absolute( $href );
+		else
+			return AitchRef::_site_url( $href );
 	}
 }
 
