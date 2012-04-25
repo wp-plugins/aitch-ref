@@ -18,8 +18,14 @@ Useful for switching between different development environments.  Attempts to re
 1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
+= .69 =
+removes duplicates from url list in admin 
+
+= .68 =
+added filter for `wp_get_attachment_url` 
+
 = .66 =
-pre_post_link cahnged to not use absolute link, was causing double http:// on some sites
+pre_post_link changed to not use absolute link, was causing double http:// on some sites
 
 = .65 =
 added aitch() helper function

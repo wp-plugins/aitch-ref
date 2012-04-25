@@ -3,7 +3,7 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP >= 5.2 and Wordpress >= 3.0
-Version: 0.66
+Version: 0.69
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
@@ -17,8 +17,11 @@ class AitchRef{
 	private static $path = '/wp-content/plugins/aitch-ref/';	// web accessible path to current to current directory, w trailing slash
 	private static $possible = array();							// a list of the possible base urls that can be replaced
 	private static $render = '';								// path to view being rendered (currently only admin)
-	
-	// run once on setup
+	 
+	/*
+	*	runs once when plugin has loaded, sets up vars and adds filters/actions
+	*
+	*/
 	public static function _setup(){
 		$pathinfo = pathinfo(__FILE__);
 		
@@ -29,7 +32,9 @@ class AitchRef{
 		self::$cwd = $pathinfo['dirname'];
 		
 		// sorry if this is confusing, some servers (media temple) have strangeness using $_SERVER['DOCUMENT_ROOT']
-		self::$path = self::_site_url_absolute(WP_PLUGIN_URL).'/'.basename( $pathinfo['dirname'] ).'/';
+		// @TODO make sure second line works on MT
+		//self::$path = self::_site_url_absolute(WP_PLUGIN_URL).'/'.basename( $pathinfo['dirname'] ).'/';
+		self::$path = self::_site_url_absolute( str_replace(ABSPATH, '/', __DIR__) ).'/';
 		
 		// these can return back urls starting with /
 		add_filter( 'bloginfo', 'AitchRef::_site_url' );
@@ -58,13 +63,18 @@ class AitchRef{
 		add_filter( 'siteurl', 'AitchRef::_site_url_absolute' );	// ಠ_ಠ
 		add_filter( 'site_url', 'AitchRef::_site_url_absolute' );	// ಠ_ಠ
 		add_filter( 'template_directory_uri', 'AitchRef::_site_url_absolute' );	
-
+		add_filter( 'wp_get_attachment_url', 'AitchRef::_site_url_absolute' );
+		
 		// admin
 		add_action( 'admin_menu', 'AitchRef::_admin_menu' );
 		add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), 'AitchRef::_admin_plugins' );
 	}
 	
-	// add_filter callback
+	/*
+	*	add_filter callback
+	*	@param string
+	*	@return string
+	*/
 	public static function _site_url( $url ){
 		if( is_array($url) ){
 			// this is to fix a bug in 'upload_dir' filter, 
@@ -78,7 +88,11 @@ class AitchRef{
 		return $url2;		
 	}
 	
-	// add_filter callback
+	/*
+	*	add_filter callback
+	*	@param string
+	*	@return string
+	*/
 	public static function _site_url_absolute( $url ){
 		if( is_array($url) ){
 			// this is to fix a bug in 'upload_dir' filter, 
@@ -89,38 +103,36 @@ class AitchRef{
 			$url2 = str_replace( self::$possible, self::$baseurl, $url );
 		}
 		
-		$has_http = ( strpos($url2, self::$baseurl)  );
-		
-		if( $has_http !== 0 ){
-			//dbug( $has_http, '$has_http' );
-			//dbug( $url2, '$url2' );
-			//dbug(self::$baseurl,'self::$baseurl');
-			
-			$url2 = self::$baseurl.$url2; 
-			//dbug($url2,'',10000);
-		}	
-			
-		if( strpos($url2, 'path-less') ){
-			//dbug($has_http);
-			//ddbug($url2);
-		}
+		if( strpos($url2, self::$baseurl) !== 0 )
+			$url2 = self::$baseurl.$url2;
 		
 		return $url2;
 	}
 	
-	// show options in 'settings' sidebar
+	/*
+	*	show link to admin options in 'settings' sidebar
+	*
+	*/
 	public static function _admin_menu(){
 		add_options_page( 'AitchRef Settings', 'aitch ref!', 'manage_options', 'aitch-ref', 'AitchRef::_options_page' );
 	}
 	
-	// add 'settings' link in main plugins page
+	/*
+	*	add 'settings' link in main plugins page
+	*	attached to plugin_action_links_* action
+	*	@param array
+	*	@return array
+	*/
 	public static function _admin_plugins( $links ){
 		$settings_link = '<a href="options-general.php?page=aitch-ref">Settings</a>';  
 		array_unshift( $links, $settings_link );
 		return $links;
 	}
 	
-	// callback for add_options_page() to render options page in admin 
+	/*
+	*	callback for add_options_page() to render options page in admin 
+	*
+	*/
 	public static function _options_page(){
 		if( isset($_POST['urls']) ){
 			self::updateUrls($_POST['urls']);
@@ -133,7 +145,11 @@ class AitchRef{
 		self::render( 'admin', $vars );
 	}
 	
-	// db interaction
+	/*
+	*	db interaction
+	*	@param bool
+	*	@return 
+	*/
 	private static function getUrls( $as_array = FALSE ){
 		$urls = self::get_option( 'aitchref_urls' );
 		
@@ -150,8 +166,15 @@ class AitchRef{
 		}
 	}
 	
+	/*
+	*
+	*	@param string
+	*	@return
+	*/
 	private static function updateUrls( $str ){
 		$urls = preg_split ("/\s+/", $str);
+		$urls = array_map( 'trim', $urls );
+		$urls = array_unique( $urls );
 		sort( $urls );
 		foreach( $urls as $k=>$url ){
 			// no trailing slash!
@@ -166,7 +189,13 @@ class AitchRef{
 		array_push( self::$messages, '<div class="updated fade"><p>aitch-ref! updated</p></div>' );
 	}
 	
-	// render a page into wherever
+	/*
+	*	render a page into wherever
+	*	(only used in admin screen)
+	*	@param string
+	*	@param object|array
+	*	@return
+	*/
 	private static function render( $filename, $vars = array() ){
 		self::$render = self::$cwd.'/'.$filename.'.php';
 		if( file_exists(self::$render) ){
@@ -176,14 +205,31 @@ class AitchRef{
 	}
 	
 	// wrappers for get_option, MU / single blog installs
+	
+	/*
+	*
+	*	@param
+	*	@return
+	*/
 	private static function get_option( $key ){
 		return self::$is_mu ? get_blog_option( 1, $key ) : get_option( $key );
 	}
 	
+	/*
+	*
+	*	@param
+	*	@param
+	*	@return
+	*/
 	private static function update_option( $key, $val ){
 		return self::$is_mu ? update_blog_option( 1, $key, $val ) : update_option( $key, $val );
 	}
 	
+	/*
+	*
+	*	@param
+	*	@return
+	*/
 	private static function delete_option( $key ){
 		return self::$is_mu ? delete_blog_option( 1, $key ) : delete_option( $key );
 	}

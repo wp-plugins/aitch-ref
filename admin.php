@@ -1,12 +1,12 @@
 <div class="wrap">
 	<h2>aitch ref!</h2>
 	
-	<?php echo $messages; ?>
+	<?= $messages; ?>
 	
 	<p>possible urls seperated by space or new line</p>
-	
+
 	<form method="post">
-		<textarea name="urls" cols="60" style="background-image:url(<?php echo $path; ?>ref.jpg);background-repeat:no-repeat;background-position:bottom right; height:377px"><?php echo $urls; ?></textarea>
+		<textarea name="urls" cols="60" style="background-image:url(<?= $path; ?>ref.jpg);background-repeat:no-repeat;background-position:bottom right; height:377px"><?= $urls; ?></textarea>
 		
 		<a href="http://www.flickr.com/photos/avinashkunnath/2402114514/in/photostream/" style="font-size:.6em">photo by Avinash Kunnath</a>
 		
