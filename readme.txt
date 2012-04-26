@@ -18,6 +18,9 @@ Useful for switching between different development environments.  Attempts to re
 1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
+= .70 =
+removed __DIR__ for php 5.2 compat
+
 = .69 =
 removes duplicates from url list in admin 
 

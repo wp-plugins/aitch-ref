@@ -3,7 +3,7 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP >= 5.2 and Wordpress >= 3.0
-Version: 0.69
+Version: 0.70
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
@@ -34,7 +34,7 @@ class AitchRef{
 		// sorry if this is confusing, some servers (media temple) have strangeness using $_SERVER['DOCUMENT_ROOT']
 		// @TODO make sure second line works on MT
 		//self::$path = self::_site_url_absolute(WP_PLUGIN_URL).'/'.basename( $pathinfo['dirname'] ).'/';
-		self::$path = self::_site_url_absolute( str_replace(ABSPATH, '/', __DIR__) ).'/';
+		self::$path = self::_site_url_absolute( str_replace(ABSPATH, '/', dirname(__FILE__)) ).'/';
 		
 		// these can return back urls starting with /
 		add_filter( 'bloginfo', 'AitchRef::_site_url' );
