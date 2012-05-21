@@ -1,7 +1,7 @@
 <?
 /*
 *
-* Version: 0.70
+* Version: 0.71
 */
 ?>
 <div class="wrap">
