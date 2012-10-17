@@ -3,24 +3,28 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP >= 5.2 and Wordpress >= 3.0
-Version: 0.71
+Version: 0.75
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
 
 class AitchRef{
-	
-	private static $baseurl = 'http://';
+	// these will be overwritten in _setup()
+	private static $baseurl = 'http://';						// is_ssl()
 	private static $cwd = '/var/www/plugins/aitch-ref';			// full server path to current directory
-	private static $is_mu = TRUE;
-	private static $messages = array();							// error / success messages to user
+	private static $is_mu = FALSE;								// multiuser install?
 	private static $path = '/wp-content/plugins/aitch-ref/';	// web accessible path to current to current directory, w trailing slash
-	private static $possible = array();							// a list of the possible base urls that can be replaced
+	
+	private static $possible = array();							// a list of the possible base urls that 
+																// can be replaced
+	
+	// only used in admin
+	private static $messages = array();							// error / success messages to user
 	private static $render = '';								// path to view being rendered (currently only admin)
 	 
 	/*
 	*	runs once when plugin has loaded, sets up vars and adds filters/actions
-	*
+	*	@return NULL
 	*/
 	public static function _setup(){
 		$pathinfo = pathinfo(__FILE__);
@@ -28,7 +32,7 @@ class AitchRef{
 		self::$is_mu = is_multisite();
 		self::$possible = self::getUrls( TRUE );
 		
-		self::$baseurl = 'http://'.$_SERVER['HTTP_HOST'];
+		self::$baseurl = is_ssl() ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'];
 		self::$cwd = $pathinfo['dirname'];
 		
 		// sorry if this is confusing, some servers (media temple) have strangeness using $_SERVER['DOCUMENT_ROOT']
@@ -61,12 +65,16 @@ class AitchRef{
 		add_filter( 'option_siteurl', 'AitchRef::_site_url_absolute' );
 		add_filter( 'page_link', 'AitchRef::_site_url_absolute' ); 
 		add_filter( 'post_link', 'AitchRef::_site_url_absolute' );
-		add_filter( 'siteurl', 'AitchRef::_site_url_absolute' );	// ಠ_ಠ
-		add_filter( 'site_url', 'AitchRef::_site_url_absolute' );	// ಠ_ಠ
+		add_filter( 'siteurl', 'AitchRef::_site_url_absolute' );	// ಠ_ಠ DEPRECATED
+		add_filter( 'site_url', 'AitchRef::_site_url_absolute' );
+		add_filter( 'stylesheet_uri', 'AitchRef::_site_url_absolute' );
 		add_filter( 'template_directory_uri', 'AitchRef::_site_url_absolute' );	
 		add_filter( 'wp_get_attachment_url', 'AitchRef::_site_url_absolute' );
 		
 		// admin
+		if( !is_admin() )
+			return;
+			
 		add_action( 'admin_menu', 'AitchRef::_admin_menu' );
 		add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), 'AitchRef::_admin_plugins' );
 	}
@@ -85,13 +93,13 @@ class AitchRef{
 		} else {
 			$url2 = str_replace( self::$possible, '', $url );
 		}
-		
+			
 		return $url2;		
 	}
 	
 	/*
 	*	add_filter callback
-	*	@param string
+	*	@param mixed
 	*	@return string
 	*/
 	public static function _site_url_absolute( $url ){

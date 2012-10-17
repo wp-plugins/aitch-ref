@@ -18,6 +18,10 @@ Useful for switching between different development environments.  Attempts to re
 1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
+= .75 = 
+added SSL support - for now you must add additional entries for each environment even if a dev ssl does not exist
+added filter for `stylesheet_uri`
+
 = .71 =
 added filter for `login_url`
 
