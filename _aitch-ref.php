@@ -123,7 +123,7 @@ class AitchRef{
 	*
 	*/
 	public static function _admin_menu(){
-		add_options_page( 'AitchRef Settings', 'aitch ref!', 'manage_options', 'aitch-ref', 'AitchRef::_options_page' );
+		add_options_page( 'aitch ref! Settings', 'aitch ref!', 'manage_options', 'aitch-ref', 'AitchRef::_options_page' );
 	}
 	
 	/*
