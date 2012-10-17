@@ -9,7 +9,7 @@
 	
 	<?= $messages; ?>
 	
-	<p>possible urls seperated by space or new line</p>
+	<p>possible urls seperated by space or new line (include http/s, no trailing slash)</p>
 
 	<form method="post">
 		<textarea name="urls" cols="60" style="background-image:url(<?= $path; ?>ref.jpg);background-repeat:no-repeat;background-position:bottom right; height:377px"><?= $urls; ?></textarea>
