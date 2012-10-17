@@ -14,7 +14,7 @@ Useful for switching between different development environments.  Attempts to re
 == Installation ==
 1. Place entire /aitch-ref/ directory to the /wp-content/plugins/ directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Enter all possible site urls in the text box, each on a new line. Example could be http://wordpress.org/ , http://dev.wordpress.org/, http://127.0.0.1/~wordpress/
+1. Enter all possible site urls in the text box, each on a new line. Example could be http://wordpress.org/ , http://dev.wordpress.org/, http://dev.wordpress. Note - subdirectories to not currently work, so http://127.0.0.1/~wordpress/ would give you bad results
 1. *Important* if SSL is used on site - each record needs an entry for ssl.  For example, if your dev environment is http://dev.wordpress you will need to enter https://dev.wordpress as well even if it does not exist.
 1. Look at your source, now back to me.  Now back to your source.
 
