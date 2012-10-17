@@ -6,7 +6,7 @@ Requires at least: 3.0.0
 Tested up to: 3.4.2
 Stable tag: trunk
 
-Remove most absolute urls in your html.  Useful for switching between dev & prod environments.  Requires PHP >= 5.2 ( json_encode )
+Remove most absolute urls in your html.  Useful for switching between development / staging / production environments and painless deployment.  Requires PHP >= 5.2 ( json_encode )
 
 == Description ==
 Useful for switching between different development environments.  Attempts to replace any absolute urls, whether generated though Wordpress option like 'siteurl' or 'home', or through hardcoded urls in posts.
@@ -15,6 +15,7 @@ Useful for switching between different development environments.  Attempts to re
 1. Place entire /aitch-ref/ directory to the /wp-content/plugins/ directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Enter all possible site urls in the text box, each on a new line. Example could be http://wordpress.org/ , http://dev.wordpress.org/, http://127.0.0.1/~wordpress/
+1. *Important* if SSL is used on site - each record needs an entry for ssl.  For example, if your dev environment is http://dev.wordpress you will need to enter https://dev.wordpress as well even if it does not exist.
 1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
