@@ -19,6 +19,12 @@ Useful for switching between different development environments.  Attempts to re
 1. Look at your source, now back to me.  Now back to your source.
 
 == Changelog ==
+= .85 =
+fixed short tags, escape textarea
+
+= .8 = 
+better MU functionality
+
 = .75 = 
 added SSL support - for now you must add additional entries for each environment even if a dev ssl does not exist
 added filter for `stylesheet_uri`
