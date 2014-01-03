@@ -3,7 +3,7 @@
 Plugin Name: aitch-ref!
 Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
 Description: href junk. Requires PHP >= 5.2 and Wordpress >= 3.0
-Version: 0.85
+Version: 0.86
 Author: Eric Eaglstun
 Author URI: http://ericeaglstun.com
 */
@@ -159,7 +159,7 @@ class AitchRef{
 		$vars->path = self::$path;
 		$vars->urls = esc_textarea( self::getUrls() );
 		
-		self::render( 'admin', $vars );
+		self::render( 'views/admin/options', $vars );
 	}
 	
 	/*
