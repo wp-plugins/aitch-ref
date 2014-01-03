@@ -113,8 +113,8 @@ class AitchRef{
 			$url2 = str_replace( self::$possible, self::$baseurl, $url );
 		}
 		
-		if( strpos($url2,'admin-bar.min') )
-			ddbug( $url );
+		//if( strpos($url2,'admin-bar.min') )
+		//	ddbug( $url );
 			
 		// what is this??
 		if( strpos($url2, self::$baseurl) !== 0 && strpos($url2, 'http://') !== 0 ){
@@ -159,7 +159,7 @@ class AitchRef{
 		$vars->path = self::$path;
 		$vars->urls = esc_textarea( self::getUrls() );
 		
-		self::render( 'admin', $vars );
+		self::render( 'admin/options', $vars );
 	}
 	
 	/*
@@ -214,7 +214,7 @@ class AitchRef{
 	*	@return
 	*/
 	private static function render( $filename, $vars = array() ){
-		self::$render = self::$cwd.'/'.$filename.'.php';
+		self::$render = self::$cwd.'/views/'.$filename.'.php';
 		if( file_exists(self::$render) ){
 			extract( (array) $vars, EXTR_SKIP );
 			include self::$render;
