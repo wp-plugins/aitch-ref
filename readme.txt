@@ -6,7 +6,7 @@ Requires at least: 3.0.0
 Tested up to: 3.8
 Stable tag: trunk
 
-Remove most absolute urls in your html.  Useful for switching between development / staging / production environments and painless deployment.  Requires PHP >= 5.2 ( json_encode )
+Remove most absolute urls in your html.  Useful for switching between development / staging / production environments and painless deployment.  Requires PHP >= 5.3
 
 == Description ==
 Useful for switching between different development environments.  Attempts to replace any absolute urls, whether generated though Wordpress option like 'siteurl' or 'home', or through hardcoded urls in posts.
@@ -20,7 +20,7 @@ Useful for switching between different development environments.  Attempts to re
 
 == Changelog ==
 = .9 =
-namespace, refactor to namespace 
+refactor to namespace 
 
 = .86 =
 moving to github

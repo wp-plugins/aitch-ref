@@ -4,6 +4,8 @@ namespace aitchref;
 
 if( is_admin() )
 	require __DIR__.'/admin.php';
+
+require __DIR__.'/lib/functions.php';
 			
 class AitchRef{
 	// these will be overwritten in setup()
@@ -36,7 +38,7 @@ class AitchRef{
 		$relative = apply_filters( 'aitch-ref-relative', $relative );
 					   
 		foreach( $relative as $filter )
-			add_filter( $filter, __NAMESPACE__.'\AitchRef::_site_url' );
+			add_filter( $filter, __NAMESPACE__.'\AitchRef::site_url' );
 		
 		// these need to return back with leading http://
 		$absolute = array( 'admin_url', 'get_permalink', 'home_url', 'login_url',
@@ -46,25 +48,23 @@ class AitchRef{
 		$absolute = apply_filters( 'aitch-ref-relative', $absolute );
 		
 		foreach( $absolute as $filter )
-			add_filter( $filter, __NAMESPACE__.'\AitchRef::_site_url_absolute' );
+			add_filter( $filter, __NAMESPACE__.'\AitchRef::site_url_absolute' );
 	}
 	
 	/*
 	*	add_filter callback
-	*	@param string
-	*	@return string
+	*	@param mixed
+	*	@return mixed
 	*/
-	public static function _site_url( $url ){
+	public static function site_url( $url ){
 		if( is_array($url) ){
-			// this is to fix a bug in 'upload_dir' filter, 
+			// this is to fix an issue in 'upload_dir' filter, 
 			// $url[error] needs to be a boolean but str_replace casts to string
 			$url2 = str_replace( self::$possible, '', array_filter($url) );
 			$url2 = array_merge( $url, $url2 );
 		} else {
 			$url2 = str_replace( self::$possible, '', $url );
 		}
-		
-		//$url2 = str_replace( '//', '/', $url2 );
 			
 		return $url2;		
 	}
@@ -72,10 +72,9 @@ class AitchRef{
 	/*
 	*	add_filter callback
 	*	@param mixed
-	*	@return string
+	*	@return mixed
 	*/
-	public static function _site_url_absolute( $url ){
-		
+	public static function site_url_absolute( $url ){
 		if( is_array($url) ){
 			// this is to fix a bug in 'upload_dir' filter, 
 			// $url[error] needs to be a boolean but str_replace casts to string
@@ -85,31 +84,12 @@ class AitchRef{
 			$url2 = str_replace( self::$possible, self::$baseurl, $url );
 		}
 		
-		//if( strpos($url2,'admin-bar.min') )
-		//	ddbug( $url );
-			
 		// what is this??
 		if( strpos($url2, self::$baseurl) !== 0 && strpos($url2, 'http://') !== 0 ){
-			//var_dump($url2);
-			//die($url2);
 			$url2 = self::$baseurl.$url2;
 		}
+		
 		return $url2;
-	}
-}
-
-if( !function_exists('aitch') ){
-	/*
-	*	helper for AitchRef to use directly in templates
-	*	@param string the url
-	*	@param bool to use absolute or not
-	*	@return string
-	*/
-	function aitch( $href, $absolute = FALSE ){
-		if( $absolute )
-			return AitchRef::_site_url_absolute( $href );
-		else
-			return AitchRef::_site_url( $href );
 	}
 }
 
@@ -124,16 +104,13 @@ function get_urls( $as_array = FALSE ){
 	$urls = get_option( 'aitchref_urls' );
 	
 	// backwards compat, now storing this option as a json encoded string cuz im a maverick
-	if( !is_array($urls) ){
+	if( !is_array($urls) )
 		$urls = (array) json_decode( $urls );
-	}
 	
-	if( $as_array ){
-		return $urls;
-	} else {
-		$str = implode( "\n", $urls );
-		return $str;
-	}
+	if( !$as_array )
+		$urls = implode( "\n", $urls );
+	
+	return $urls;
 }
 
 // MU wrappers
