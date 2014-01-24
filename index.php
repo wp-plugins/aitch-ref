@@ -1,26 +1,18 @@
 <?php
-/*
-Plugin Name: aitch-ref!
-Plugin URI: http://wordpress.org/extend/plugins/aitch-ref/
-Description: href junk. Requires PHP >= 5.2 and Wordpress >= 3.0
-Version: 0.86
-Author: Eric Eaglstun
-Author URI: http://ericeaglstun.com
-*/
 
+namespace aitchref;
+
+if( is_admin() )
+	require __DIR__.'/admin.php';
+			
 class AitchRef{
 	// these will be overwritten in setup()
 	private static $baseurl = 'http://';						// is_ssl()
 	private static $blog_id = 1;								// multiuser support
 	private static $cwd = '/var/www/plugins/aitch-ref';			// full server path to current directory
-	private static $path = '/wp-content/plugins/aitch-ref/';	// web accessible path to current to current directory, w trailing slash
 	
 	private static $possible = array();							// a list of the possible base urls that 
 																// can be replaced
-	
-	// only used in admin
-	private static $messages = array();							// error / success messages to user
-	private static $render = '';								// path to view being rendered (currently only admin.php)
 	 
 	/*
 	*	runs once when plugin has loaded, sets up vars and adds filters/actions
@@ -31,50 +23,30 @@ class AitchRef{
 		
 		global $blog_id;
 		self::$blog_id = $blog_id;
-		self::$possible = self::getUrls( TRUE );
+		self::$possible = get_urls( TRUE );
 		
 		self::$baseurl = is_ssl() ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'];
 		self::$cwd = $pathinfo['dirname'];
 		
 		// these can return back urls starting with /
-		add_filter( 'bloginfo', 'AitchRef::_site_url' );
-		add_filter( 'bloginfo_url', 'AitchRef::_site_url' );
-		add_filter( 'content_url', 'AitchRef::_site_url' );
-		add_filter( 'get_pagenum_link', 'AitchRef::_site_url' );
-		add_filter( 'option_url', 'AitchRef::_site_url' );
-		add_filter( 'plugins_url', 'AitchRef::_site_url' );
-		add_filter( 'pre_post_link', 'AitchRef::_site_url' );
-		add_filter( 'script_loader_src', 'AitchRef::_site_url' );
-		add_filter( 'style_loader_src', 'AitchRef::_site_url' );
-		add_filter( 'term_link', 'AitchRef::_site_url' );
-		add_filter( 'the_content', 'AitchRef::_site_url' );
-		add_filter( 'upload_dir', 'AitchRef::_site_url' );
-		add_filter( 'url', 'AitchRef::_site_url' );
-		add_filter( 'wp_list_pages', 'AitchRef::_site_url' );
+		$relative = array( 'bloginfo', 'bloginfo_url', 'content_url', 'get_pagenum_link',
+						   'option_url', 'plugins_url', 'pre_post_link', 'script_loader_src',
+						   'style_loader_src', 'term_link', 'the_content', 'upload_dir',
+						   'url', 'wp_list_pages' );
+		$relative = apply_filters( 'aitch-ref-relative', $relative );
+					   
+		foreach( $relative as $filter )
+			add_filter( $filter, __NAMESPACE__.'\AitchRef::_site_url' );
 		
 		// these need to return back with leading http://
-		add_filter( 'admin_url', 'AitchRef::_site_url_absolute' );
-		add_filter( 'get_permalink', 'AitchRef::_site_url_absolute' ); 
-		add_filter( 'home_url', 'AitchRef::_site_url_absolute' );
-		add_filter( 'login_url', 'AitchRef::_site_url_absolute' );
-		add_filter( 'option_home', 'AitchRef::_site_url_absolute' );
-		add_filter( 'option_siteurl', 'AitchRef::_site_url_absolute' );
-		add_filter( 'page_link', 'AitchRef::_site_url_absolute' ); 
-		add_filter( 'post_link', 'AitchRef::_site_url_absolute' );
-		add_filter( 'siteurl', 'AitchRef::_site_url_absolute' );	// ಠ_ಠ DEPRECATED
-		add_filter( 'site_url', 'AitchRef::_site_url_absolute' );
-		add_filter( 'stylesheet_uri', 'AitchRef::_site_url_absolute' );
-		add_filter( 'template_directory_uri', 'AitchRef::_site_url_absolute' );	
-		add_filter( 'wp_get_attachment_url', 'AitchRef::_site_url_absolute' );
+		$absolute = array( 'admin_url', 'get_permalink', 'home_url', 'login_url',
+						   'option_home', 'option_siteurl', 'page_link', 'post_link',
+						   'siteurl', 'site_url', 'stylesheet_uri', 
+						   'template_directory_uri', 'wp_get_attachment_url' );
+		$absolute = apply_filters( 'aitch-ref-relative', $absolute );
 		
-		// admin
-		if( !is_admin() )
-			return;
-		
-		self::$path = plugins_url( '', __FILE__ );
-		
-		add_action( 'admin_menu', 'AitchRef::_admin_menu' );
-		add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), 'AitchRef::_admin_plugins' );
+		foreach( $absolute as $filter )
+			add_filter( $filter, __NAMESPACE__.'\AitchRef::_site_url_absolute' );
 	}
 	
 	/*
@@ -124,132 +96,6 @@ class AitchRef{
 		}
 		return $url2;
 	}
-	
-	/*
-	*	show link to admin options in 'settings' sidebar
-	*
-	*/
-	public static function _admin_menu(){
-		add_options_page( 'aitch ref! Settings', 'aitch ref!', 'manage_options', 'aitch-ref', 'AitchRef::_options_page' );
-	}
-	
-	/*
-	*	add 'settings' link in main plugins page
-	*	attached to plugin_action_links_* action
-	*	@param array
-	*	@return array
-	*/
-	public static function _admin_plugins( $links ){
-		$settings_link = '<a href="options-general.php?page=aitch-ref">Settings</a>';  
-		array_unshift( $links, $settings_link );
-		return $links;
-	}
-	
-	/*
-	*	callback for add_options_page() to render options page in admin 
-	*
-	*/
-	public static function _options_page(){
-		if( isset($_POST['urls']) ){
-			self::updateUrls( $_POST['urls'] );
-		}
-		
-		$vars = (object) array();
-		$vars->messages = implode( "\n", self::$messages );
-		$vars->path = self::$path;
-		$vars->urls = esc_textarea( self::getUrls() );
-		
-		self::render( 'admin/options', $vars );
-	}
-	
-	/*
-	*	db interaction
-	*	@param bool
-	*	@return string | array
-	*/
-	private static function getUrls( $as_array = FALSE ){
-		$urls = self::get_option( 'aitchref_urls' );
-		
-		// backwards compat, now storing this option as a json encoded string cuz im a maverick
-		if( !is_array($urls) ){
-			$urls = (array) json_decode( $urls );
-		}
-		
-		if( $as_array ){
-			return $urls;
-		} else {
-			$str = implode( "\n", $urls );
-			return $str;
-		}
-	}
-	
-	/*
-	*
-	*	@param string
-	*	@return
-	*/
-	private static function updateUrls( $str ){
-		$urls = preg_split ("/\s+/", $str);
-		$urls = array_map( 'trim', $urls );
-		$urls = array_unique( $urls );
-		sort( $urls );
-		foreach( $urls as $k=>$url ){
-			// no trailing slash!
-			if( strrpos($url, '/') == (strlen($url)-1) ){
-				$urls[$k] = substr( $url, 0, -1 );
-			}
-		}
-		
-		$urls = json_encode( $urls );
-		self::update_option( 'aitchref_urls', $urls );
-		
-		array_push( self::$messages, '<div class="updated fade"><p>aitch-ref! updated</p></div>' );
-	}
-	
-	/*
-	*	render a page into wherever
-	*	(only used in admin screen)
-	*	@param string
-	*	@param object|array
-	*	@return
-	*/
-	private static function render( $filename, $vars = array() ){
-		self::$render = self::$cwd.'/views/'.$filename.'.php';
-		if( file_exists(self::$render) ){
-			extract( (array) $vars, EXTR_SKIP );
-			include self::$render;
-		}
-	}
-	
-	// wrappers for get_option, MU / single blog installs
-	
-	/*
-	*
-	*	@param
-	*	@return
-	*/
-	private static function get_option( $key ){
-		return is_multisite() ? get_blog_option( self::$blog_id, $key ) : get_option( $key );
-	}
-	
-	/*
-	*
-	*	@param
-	*	@param
-	*	@return
-	*/
-	private static function update_option( $key, $val ){
-		return is_multisite() ? update_blog_option( self::$blog_id, $key, $val ) : update_option( $key, $val );
-	}
-	
-	/*
-	*
-	*	@param
-	*	@return
-	*/
-	private static function delete_option( $key ){
-		return is_multisite() ? delete_blog_option( self::$blog_id, $key ) : delete_option( $key );
-	}
 }
 
 if( !function_exists('aitch') ){
@@ -268,3 +114,57 @@ if( !function_exists('aitch') ){
 }
 
 AitchRef::setup();
+
+/*
+*	db interaction
+*	@param bool
+*	@return string | array
+*/
+function get_urls( $as_array = FALSE ){
+	$urls = get_option( 'aitchref_urls' );
+	
+	// backwards compat, now storing this option as a json encoded string cuz im a maverick
+	if( !is_array($urls) ){
+		$urls = (array) json_decode( $urls );
+	}
+	
+	if( $as_array ){
+		return $urls;
+	} else {
+		$str = implode( "\n", $urls );
+		return $str;
+	}
+}
+
+// MU wrappers
+
+/*
+*
+*	@param
+*	@return
+*/
+function delete_option( $key ){
+	global $blog_id;
+	return is_multisite() ? \delete_blog_option( $blog_id, $key ) : \delete_option( $key );
+}
+
+/*
+*
+*	@param
+*	@return
+*/
+function get_option( $key ){
+	global $blog_id;
+	return is_multisite() ? \get_blog_option( $blog_id, $key ) : \get_option( $key );
+}
+
+/*
+*
+*	@param
+*	@param
+*	@return
+*/
+function update_option( $key, $val ){
+	global $blog_id;
+	return is_multisite() ? \update_blog_option( $blog_id, $key, $val ) : \update_option( $key, $val );
+}
