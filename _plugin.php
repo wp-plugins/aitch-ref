@@ -3,7 +3,7 @@
 Plugin Name:	aitch-ref!
 Plugin URI:		http://wordpress.org/extend/plugins/aitch-ref/
 Description:	href junk. Requires PHP >= 5.3 and Wordpress >= 3.0
-Version:		0.9
+Version:		0.9.1
 Author:			postpostmodern, pinecone-dot-io
 Author URI:		http://pinecone.io/
 */

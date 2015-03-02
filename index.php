@@ -33,7 +33,7 @@ class AitchRef{
 		// these can return back urls starting with /
 		$relative = array( 'bloginfo', 'bloginfo_url', 'content_url', 'get_pagenum_link',
 						   'option_url', 'plugins_url', 'pre_post_link', 'script_loader_src',
-						   'style_loader_src', 'term_link', 'the_content', 'upload_dir',
+						   'style_loader_src', 'term_link', 'the_content',
 						   'url', 'wp_list_pages' );
 		$relative = apply_filters( 'aitch-ref-relative', $relative );
 					   
@@ -44,7 +44,7 @@ class AitchRef{
 		$absolute = array( 'admin_url', 'get_permalink', 'home_url', 'login_url',
 						   'option_home', 'option_siteurl', 'page_link', 'post_link',
 						   'siteurl', 'site_url', 'stylesheet_uri', 
-						   'template_directory_uri', 'wp_get_attachment_url' );
+						   'template_directory_uri', 'upload_dir', 'wp_get_attachment_url' );
 		$absolute = apply_filters( 'aitch-ref-relative', $absolute );
 		
 		foreach( $absolute as $filter )
@@ -85,7 +85,7 @@ class AitchRef{
 		}
 		
 		// what is this??
-		if( strpos($url2, self::$baseurl) !== 0 && strpos($url2, 'http://') !== 0 ){
+		if( is_string($url2) && (strpos($url2, self::$baseurl) !== 0) && (strpos($url2, 'http://') !== 0) ){
 			$url2 = self::$baseurl.$url2;
 		}
 		
