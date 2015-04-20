@@ -11,7 +11,6 @@ class AitchRef{
 	// these will be overwritten in setup()
 	private static $baseurl = 'http://';						// is_ssl()
 	private static $blog_id = 1;								// multiuser support
-	private static $cwd = '/var/www/plugins/aitch-ref';			// full server path to current directory
 	
 	private static $possible = array();							// a list of the possible base urls that 
 																// can be replaced
@@ -21,15 +20,14 @@ class AitchRef{
 	*	@return NULL
 	*/
 	public static function setup(){
-		$pathinfo = pathinfo(__FILE__);
-		
 		global $blog_id;
 		self::$blog_id = $blog_id;
-		self::$possible = get_urls( TRUE );
-		
+
+		// do this to get best match first
+		self::$possible = array_reverse( get_urls(TRUE) );
+
 		self::$baseurl = is_ssl() ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'];
-		self::$cwd = $pathinfo['dirname'];
-		
+
 		// these can return back urls starting with /
 		$relative = array( 'bloginfo', 'bloginfo_url', 'content_url', 'get_pagenum_link',
 						   'option_url', 'plugins_url', 'pre_post_link', 'script_loader_src',
@@ -44,9 +42,12 @@ class AitchRef{
 		$absolute = array( 'admin_url', 'get_permalink', 'home_url', 'login_url',
 						   'option_home', 'option_siteurl', 'page_link', 'post_link',
 						   'siteurl', 'site_url', 'stylesheet_uri', 
-						   'template_directory_uri', 'upload_dir', 'wp_get_attachment_url' );
-		$absolute = apply_filters( 'aitch-ref-relative', $absolute );
-		
+						   'template_directory_uri', 'upload_dir', 'wp_get_attachment_url',
+						   // @TODO get this to work
+						   'acf/helpers/get_dir'
+						   );
+		$absolute = apply_filters( 'aitch-ref-absolute', $absolute );
+
 		foreach( $absolute as $filter )
 			add_filter( $filter, __NAMESPACE__.'\AitchRef::site_url_absolute' );
 	}
@@ -82,11 +83,6 @@ class AitchRef{
 			$url2 = array_merge( $url, $url2 );
 		} else {
 			$url2 = str_replace( self::$possible, self::$baseurl, $url );
-		}
-		
-		// what is this??
-		if( is_string($url2) && (strpos($url2, self::$baseurl) !== 0) && (strpos($url2, 'http://') !== 0) ){
-			$url2 = self::$baseurl.$url2;
 		}
 		
 		return $url2;

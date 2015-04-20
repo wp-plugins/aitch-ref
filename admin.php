@@ -20,12 +20,13 @@ add_action( 'admin_menu', __NAMESPACE__.'\admin_menu' );
 function admin_plugins( $links ){
 	$settings_link = '<a href="options-general.php?page=aitch-ref">Settings</a>';  
 	array_unshift( $links, $settings_link );
+
 	return $links;
 }
 add_filter( 'plugin_action_links_aitch-ref/_plugin.php', __NAMESPACE__.'\admin_plugins' );
 	
 /*
-*
+*	get and set messages
 *	@param string
 *	@return array
 */
